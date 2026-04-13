@@ -9,6 +9,7 @@ export const typeDefs = gql`
 
   type Query {
     products: [Product!]!
+    product(id: ID!): Product
   }
 
   type Mutation {
