@@ -22,6 +22,7 @@ export const UPDATE_PRODUCT = gql`
       id
       name
       price
+      __typename
     }
   }
 `;

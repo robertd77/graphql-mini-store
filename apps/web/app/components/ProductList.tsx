@@ -11,16 +11,25 @@ export function ProductList() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  const [deleteProduct] = useMutation(DELETE_PRODUCT, {
-    refetchQueries: [{ query: GET_PRODUCTS }],
-    awaitRefetchQueries: true,
+  const [deleteProduct, { loading: deleting }] = useMutation(DELETE_PRODUCT, {
+    update(cache, { data }) {
+      const deletedId = data?.deleteProduct;
+
+      cache.modify({
+        fields: {
+          products(existingProducts = [], { readField }) {
+            return existingProducts.filter(
+              (p: any) => readField("id", p) !== deletedId,
+            );
+          },
+        },
+      });
+    },
   });
 
-  const [updateProduct] = useMutation(UPDATE_PRODUCT, {
-    refetchQueries: [{ query: GET_PRODUCTS }],
-    awaitRefetchQueries: true,
-  });
+  const [updateProduct, { loading: updating }] = useMutation(UPDATE_PRODUCT);
 
   const handleDelete = (id: string) => {
     deleteProduct({
@@ -37,6 +46,20 @@ export function ProductList() {
   };
 
   const handleSave = (id: string) => {
+    setError(null);
+
+    if (!editName.trim()) {
+      setError("Name is required");
+      return;
+    }
+
+    const price = parseFloat(editPrice);
+
+    if (isNaN(price) || price < 0) {
+      setError("Price must be a valid positive number");
+      return;
+    }
+
     updateProduct({
       variables: {
         id,
@@ -64,23 +87,31 @@ export function ProductList() {
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 placeholder="Product name"
+                required
               />
               <input
                 type="number"
                 value={editPrice}
                 onChange={(e) => setEditPrice(e.target.value)}
                 placeholder="Price"
+                required
               />
               <button onClick={() => handleSave(p.id)}>Save</button>
               <button onClick={handleCancel}>Cancel</button>
             </>
           ) : (
             <>
-              <span onClick={() => handleEdit(p)}>
+              <span>
                 {p.name} - ${p.price}
               </span>
-              <button onClick={() => handleEdit(p)}>Edit</button>
-              <button onClick={() => handleDelete(p.id)}>Delete</button>
+
+              <button disabled={deleting} onClick={() => handleEdit(p)}>
+                Edit
+              </button>
+              <button disabled={updating} onClick={() => handleDelete(p.id)}>
+                Delete
+              </button>
+              {error && <p style={{ color: "red" }}>{error}</p>}
             </>
           )}
         </div>
