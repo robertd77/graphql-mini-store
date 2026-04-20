@@ -49,25 +49,51 @@ export default function AddProductForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form style={{ marginBottom: "16px" }} onSubmit={handleSubmit}>
       <h3>Add Product</h3>
-
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-        required
-      />
-
-      <input
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
-        placeholder="Price"
-        type="number"
-        required
-      />
-
-      <button type="submit" disabled={loading}>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        <input
+          style={{
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            flex: 1,
+          }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Name"
+          required
+        />
+      </div>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        <input
+          style={{
+            padding: "8px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            flex: 1,
+          }}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="Price"
+          type="number"
+          required
+        />
+      </div>
+      <button
+        style={{
+          padding: "8px 12px",
+          borderRadius: "6px",
+          backgroundColor: "#0070f3",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Adding..." : "Add Product"}
       </button>
       {formError && <p style={{ color: "red" }}>{formError}</p>}

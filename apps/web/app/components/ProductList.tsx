@@ -74,43 +74,106 @@ export function ProductList() {
     setEditingId(null);
   };
 
+  const buttonStyle = {
+    marginLeft: "8px",
+    padding: "6px 10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    cursor: "pointer",
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
     <>
       {data?.products.map((p) => (
-        <div key={p.id} style={{ marginBottom: "10px" }}>
+        <div
+          key={p.id}
+          style={{
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            padding: "12px",
+            marginBottom: "12px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           {editingId === p.id ? (
             <>
-              <input
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Product name"
-                required
-              />
-              <input
-                type="number"
-                value={editPrice}
-                onChange={(e) => setEditPrice(e.target.value)}
-                placeholder="Price"
-                required
-              />
-              <button onClick={() => handleSave(p.id)}>Save</button>
-              <button onClick={handleCancel}>Cancel</button>
+              <div
+                style={{ display: "flex", gap: "8px", marginBottom: "16px" }}
+              >
+                <input
+                  style={{
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    flex: 1,
+                  }}
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Product name"
+                  required
+                />
+              </div>
+              <div
+                style={{ display: "flex", gap: "8px", marginBottom: "16px" }}
+              >
+                <input
+                  style={{
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    flex: 1,
+                  }}
+                  type="number"
+                  value={editPrice}
+                  onChange={(e) => setEditPrice(e.target.value)}
+                  placeholder="Price"
+                  required
+                />
+              </div>
+              <button
+                style={{
+                  ...buttonStyle,
+                  backgroundColor: "#22c55e",
+                  color: "white",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                onClick={() => handleSave(p.id)}
+              >
+                Save
+              </button>
+              <button style={buttonStyle} onClick={handleCancel}>
+                Cancel
+              </button>
             </>
           ) : (
             <>
-              <span>
-                {p.name} - ${p.price}
-              </span>
-
-              <button disabled={deleting} onClick={() => handleEdit(p)}>
-                Edit
-              </button>
-              <button disabled={updating} onClick={() => handleDelete(p.id)}>
-                Delete
-              </button>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontWeight: 500 }}>
+                  {p.name} - ${p.price}
+                </span>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button
+                  style={buttonStyle}
+                  disabled={deleting}
+                  onClick={() => handleEdit(p)}
+                >
+                  Edit
+                </button>
+                <button
+                  style={{ ...buttonStyle, color: "red" }}
+                  disabled={updating}
+                  onClick={() => handleDelete(p.id)}
+                >
+                  Delete
+                </button>
+              </div>
               {error && <p style={{ color: "red" }}>{error}</p>}
             </>
           )}
